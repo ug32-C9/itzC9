@@ -1,0 +1,7 @@
+- 👋 Hi, I’m @itzC9
+- 👀 I’m interested in Reverse engineering want to teach me? @_notnarsyuri_ on discord! 
+- 🌱 I’m currently learning Lua, Reverse Engineering, Html, C++, C#
+- 💞️ I’m looking to collaborate on Roblox Exploit, Roblox Scripts, 
+- 📫 How to reach me Discord: https://discord.com/invite/fA2f58DSED
+- 😄 Pronouns: itzC9 - itz_C9
+- ⚡ Fun fact: Carrots Are Orange Not Yellow

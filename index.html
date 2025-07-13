@@ -1,184 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>QuertzClient Gamepasses Shop</title>
-  <style>
-    /* General Styles */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      background: linear-gradient(to bottom, #001f3f, #0074D9);
-      min-height: 100vh;
-      color: #fff;
-      position: relative;
-      overflow-x: hidden;
-    }
-
-    h1 {
-      text-align: center;
-      margin: 30px 0;
-      font-size: 2.5em;
-    }
-
-    .container {
-      max-width: 800px;
-      margin: auto;
-      padding: 20px;
-      position: relative;
-      z-index: 2;
-    }
-
-    .gamepass {
-      background: rgba(0, 0, 50, 0.8);
-      border-left: 5px solid #00bfff;
-      margin-bottom: 30px;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.3);
-    }
-
-    .gamepass h2 {
-      font-size: 1.5em;
-      margin-bottom: 10px;
-      color: #00bfff;
-    }
-
-    .gamepass p {
-      margin-bottom: 15px;
-      font-size: 1.1em;
-    }
-
-    .buttons {
-      display: flex;
-      gap: 10px;
-    }
-
-    .buttons a {
-      text-decoration: none;
-      padding: 10px 15px;
-      border-radius: 5px;
-      font-weight: bold;
-      transition: background 0.3s;
-    }
-
-    .view-btn {
-      background: #ff851b;
-      color: white;
-    }
-
-    .view-btn:hover {
-      background: #ff6300;
-    }
-
-    .Buy-btn {
-      background: #2ecc40;
-      color: white;
-    }
-
-    .Buy-btn:hover {
-      background: #27ae60;
-    }
-
-    /* Falling Lines Animation */
-    .falling-lines {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      overflow: hidden;
-      pointer-events: none;
-    }
-
-    .line {
-      position: absolute;
-      width: 2px;
-      height: 100px;
-      background: rgba(255, 255, 255, 0.1);
-      animation: fall 5s linear infinite;
-    }
-
-    @keyframes fall {
-      0% {
-        transform: translateY(-100px) translateX(0);
-        opacity: 0;
-      }
-      50% {
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(110vh) translateX(-50px);
-        opacity: 0;
-      }
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nov-Scripts</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="script.js" defer></script>
 </head>
 <body>
-
-<div class="falling-lines">
-  <!-- Random falling lines -->
-  <div class="line" style="left: 10%; animation-delay: 1s;"></div>
-  <div class="line" style="left: 20%; animation-delay: 1s;"></div>
-  <div class="line" style="left: 30%; animation-delay: 1s;"></div>
-  <div class="line" style="left: 40%; animation-delay: 1s;"></div>
-  <div class="line" style="left: 50%; animation-delay: 1s;"></div>
-  <div class="line" style="left: 60%; animation-delay: 1s;"></div>
-  <div class="line" style="left: 70%; animation-delay: 1s;"></div>
-  <div class="line" style="left: 80%; animation-delay: 1s;"></div>
-    <div class="line" style="left: 90%; animation-delay: 1s;"></div>
-  <div class="line" style="left: 100%; animation-delay: 1s;"></div>
-  <div class="line" style="left: 10%; animation-delay: 1s;"></div>
-  <div class="line" style="left: 20%; animation-delay: 1s;"></div>
-  <div class="line" style="left: 30%; animation-delay: 1s;"></div>
-  <div class="line" style="left: 40%; animation-delay: 1s;"></div>
-  <div class="line" style="left: 50%; animation-delay: 1s;"></div>
-  <div class="line" style="left: 60%; animation-delay: 1s;"></div>
-    <div class="line" style="left: 70%; animation-delay: 1s;"></div>
-  <div class="line" style="left: 80%; animation-delay: 1s;"></div>
-  <div class="line" style="left: 90%; animation-delay: 1s;"></div>
-  <div class="line" style="left: 100%; animation-delay: 1s;"></div>
-</div>
-
-<h1>QuertzClient Gamepass Shop</h1>
-
-<div class="container">
-  <!-- Gamepass 1 -->
-  <div class="gamepass">
-    <h2>10 Robux</h2>
-    <p>Buy Premium 1 Weeks</p>
-    <div class="buttons">
-      <a class="view-btn" href="#">View</a>
-      <a class="Buy-btn" href="https://roblox.com/game-pass/1155430905" target="_blank">Buy</a>
-    </div>
+  <div id="loader" class="loader-wrapper">
+    <div class="loader"></div>
+    <h1 class="loading-text">Loading Nov-Scripts...</h1>
   </div>
 
-  <!-- Gamepass 2 -->
-  <div class="gamepass">
-    <h2>20 Robux</h2>
-    <p>Buy Premium 2 Weeks</p>
-    <div class="buttons">
-      <a class="view-btn" href="#">View</a>
-      <a class="Buy-btn" href="https://roblox.com/game-pass/1150733027" target="_blank">Buy</a>
+  <header id="main-header">
+    <div class="container">
+      <a href="#" class="logo" onclick="showSlide('script')">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Unofficial_JavaScript_logo_2.svg/600px-Unofficial_JavaScript_logo_2.svg.png" alt="Logo" />
+        <h1>Nov-Scripts</h1>
+      </a>
+      <nav class="side-menu">
+        <a class="nav-link" href="#" onclick="showSlide('script')">Script</a>
+        <a class="nav-link" href="#" onclick="showSlide('shop')">Shop</a>
+        <a class="nav-link" href="#" onclick="showSlide('support')">Support</a>
+      </nav>
+      <button id="mobile-menu-btn" onclick="toggleMenu()">☰</button>
     </div>
-  </div>
+  </header>
 
-  <!-- Gamepass 3 -->
-  <div class="gamepass">
-    <h2>30 Robux</h2>
-    <p>Buy Premium 1 Month</p>
-    <div class="buttons">
-      <a class="view-btn" href="#">View</a>
-      <a class="Buy-btn" href="https://roblox.com/game-pass/1152682950" target="_blank">Buy</a>
+  <main>
+    <section class="slide" id="script-slide">
+      <div class="container section">
+        <h2 class="section-title">Script</h2>
+        <div class="terminal-window">
+          <div class="terminal-header">
+            <div class="terminal-buttons">
+              <div class="t-btn t-close"></div>
+              <div class="t-btn t-min"></div>
+              <div class="t-btn t-max"></div>
+            </div>
+            <span class="terminal-title">script.lua</span>
+          </div>
+          <div class="terminal-body">
+            <pre id="script-code">loadstring(game:HttpGet("https://raw.githubusercontent.com/Nov-scripts/Nov-scripts/main/Nov-scripts.lua"))()</pre>
+            <button class="btn-copy" onclick="copyCode()">Copy</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="shop-slide" style="display:none">
+      <div class="container section">
+        <h2 class="section-title">Shop</h2>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">🛒</div>
+            <h3>1 Week Key</h3>
+            <p>Access scripts and features for 1 week.</p>
+            <a href="https://www.roblox.com/catalog/74970939020346/1-week" target="_blank" class="btn btn-primary">Buy</a>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">⏳</div>
+            <h3>1 Month Key</h3>
+            <p>Access scripts and features for 1 month.</p>
+            <a href="https://www.roblox.com/catalog/72111813061314/1-month" target="_blank" class="btn btn-primary">Buy</a>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🕒</div>
+            <h3>3 Months Key</h3>
+            <p>Access scripts and features for 3 months.</p>
+            <a href="https://www.roblox.com/catalog/136330632955006/3-months" target="_blank" class="btn btn-primary">Buy</a>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🛡️</div>
+            <h3>5 Months Key</h3>
+            <p>Access scripts and features for 5 months.</p>
+            <a href="https://www.roblox.com/catalog/128942248437206/5-months" target="_blank" class="btn btn-primary">Buy</a>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🧩</div>
+            <h3>Custom Key</h3>
+            <p>Use an existing key to create your own custom key.</p>
+            <a href="https://www.roblox.com/catalog/94187358789738/custom-key" target="_blank" class="btn btn-primary">Buy</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="support-slide" style="display:none">
+      <div class="container section">
+        <h2 class="section-title">Support</h2>
+        <div class="coming-soon-card">
+          <div class="pulsing-icon">💬</div>
+          <h3>Join Our Discord</h3>
+          <p>Looking for help or want to chill with the community? Join our Discord!</p>
+          <a href="https://discord.gg/vTTehBVWg6" target="_blank" class="btn btn-secondary">Join Discord</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="main-footer">
+    <div class="container">
+      <h3>Nov-Scripts</h3>
+      <p>Your source for Roblox script automation.</p>
+      <div class="footer-bottom">
+        <span>© 2025 Nov-Scripts. All rights reserved.</span>
+        <div class="credits">Credits: itzC9, GoodGamer, Nov</div>
+      </div>
     </div>
-  </div>
-</div>
-
+  </footer>
 </body>
-  </html>
+</html>

@@ -2,113 +2,180 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Nov-Scripts</title>
-  <link rel="stylesheet" href="styles.css" />
-  <script src="script.js" defer></script>
+  <style>
+    :root {
+      --bg-dark-1: #0A0A10;
+      --bg-dark-2: #10101B;
+      --bg-glass: rgba(16, 16, 27, 0.6);
+      --primary-accent: #8A2BE2;
+      --primary-hover: #9932CC;
+      --secondary-accent: #00BFFF;
+      --text-light: #F0F0F8;
+      --text-muted: #A0A0B8;
+      --text-code: #00FF7F;
+      --border-color: rgba(255, 255, 255, 0.1);
+      --glow-color: rgba(138, 43, 226, 0.5);
+      --shadow-color: rgba(138, 43, 226, 0.2);
+      --font-primary: 'Poppins', sans-serif;
+      --font-secondary: 'Roboto Mono', monospace;
+      --border-radius-md: 12px;
+      --border-radius-lg: 16px;
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes pulse {
+      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(138,43,226,0.7); }
+      70% { box-shadow: 0 0 0 20px rgba(138,43,226,0); }
+      100% { transform: scale(1); }
+    }
+    @keyframes animated-border {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-primary);
+      background: var(--bg-dark-1);
+      color: var(--text-light);
+      overflow-x: hidden;
+    }
+    /* loading overlay */
+    #loading {
+      position: fixed; top:0; left:0; right:0; bottom:0;
+      background: var(--bg-dark-2);
+      display:flex; align-items:center; justify-content:center;
+      z-index:10000;
+    }
+    #loading .spinner {
+      border:5px solid var(--bg-glass);
+      border-top:5px solid var(--primary-accent);
+      border-radius:50%;
+      width:60px; height:60px;
+      animation:spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    #spotlight-cursor {
+      position: fixed; top:0; left:0; width:600px; height:600px;
+      border-radius:50%; background:radial-gradient(circle, var(--glow-color) 0%, transparent 60%);
+      pointer-events:none; transform:translate(-50%,-50%); z-index:-1;
+      transition: width .3s, height .3s;
+    }
+    .container { max-width:1100px; margin:0 auto; padding:0 20px; }
+    .menu { display:flex; justify-content:center; gap:10px; margin:20px 0; }
+    .menu button {
+      background:var(--bg-glass); color:var(--text-light); padding:10px 20px;
+      border:1px solid var(--border-color); border-radius:var(--border-radius-md);
+      cursor:pointer; transition:.3s;
+    }
+    .menu button:hover { background:var(--bg-dark-2); }
+    .slide { display:block; animation:fadeIn .5s; }
+    .slide:not([style*="display:block"]) { display:none; }
+    .code-box { background:var(--bg-dark-2); border:1px solid var(--border-color);
+      border-radius:var(--border-radius-md); padding:20px; position:relative;
+      display:flex; align-items:center; gap:10px;
+    }
+    .code-box code {
+      font-family:var(--font-secondary); color:var(--text-code);
+      flex:1; overflow-x:auto;
+    }
+    .code-box button {
+      background:var(--primary-accent); color:#fff; border:none;
+      padding:8px 12px; border-radius:var(--border-radius-md); cursor:pointer;
+      animation:pulse 2s infinite;
+    }
+    .shop-item { background:var(--bg-glass); padding:20px; margin:10px 0;
+      border:1px solid var(--border-color); border-radius:var(--border-radius-md);
+    }
+    .shop-item h3 { margin-bottom:10px; }
+    .shop-item p { color:var(--text-muted); margin-bottom:10px; }
+    .shop-item button {
+      background:var(--secondary-accent); color:#fff; border:none;
+      padding:8px 16px; border-radius:var(--border-radius-md); cursor:pointer;
+      transition:.3s;
+    }
+    .shop-item button:hover { background:var(--primary-hover); }
+    .slide h2 { margin-bottom:20px; text-align:center; }
+  </style>
 </head>
 <body>
-  <div id="loader" class="loader-wrapper">
-    <div class="loader"></div>
-    <h1 class="loading-text">Loading Nov-Scripts...</h1>
+  <!-- loading screen -->
+  <div id="loading"><div class="spinner"></div></div>
+
+  <div id="spotlight-cursor"></div>
+
+  <div class="container">
+    <div class="menu">
+      <button onclick="showSlide('script')">Script</button>
+      <button onclick="showSlide('shop')">Shop</button>
+      <button onclick="showSlide('support')">Support</button>
+    </div>
+
+    <div class="slide" id="script-slide">
+      <h2>Script</h2>
+      <div class="code-box">
+        <code id="script-code">loadstring(game:HttpGet("https://raw.githubusercontent.com/Nov-scripts/Nov-scripts/refs/heads/main/Nov-scripts.lua"))()</code>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+    </div>
+
+    <div class="slide" id="shop-slide">
+      <h2>Shop</h2>
+      <div class="shop-item">
+        <h3>1 Week Key</h3>
+        <p>Buying this gives 1 week access to all features.</p>
+        <a href="https://www.roblox.com/catalog/74970939020346/1-week" target="_blank">
+          <button>Buy</button>
+        </a>
+      </div>
+      <div class="shop-item">
+        <h3>1 Month Key</h3>
+        <p>Buying this gives 1 month access to all features.</p>
+        <a href="https://www.roblox.com/catalog/72111813061314/1-month" target="_blank">
+          <button>Buy</button>
+        </a>
+      </div>
+      <!-- add more shop-items as needed -->
+    </div>
+
+    <div class="slide" id="support-slide">
+      <h2>Support</h2>
+      <p>Join our Discord for support, updates, and community!</p>
+      <a href="https://discord.gg/vTTehBVWg6" target="_blank">
+        <button>Join Discord</button>
+      </a>
+    </div>
   </div>
 
-  <header id="main-header">
-    <div class="container">
-      <a href="#" class="logo" onclick="showSlide('script')">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Unofficial_JavaScript_logo_2.svg/600px-Unofficial_JavaScript_logo_2.svg.png" alt="Logo" />
-        <h1>Nov-Scripts</h1>
-      </a>
-      <nav class="side-menu">
-        <a class="nav-link" href="#" onclick="showSlide('script')">Script</a>
-        <a class="nav-link" href="#" onclick="showSlide('shop')">Shop</a>
-        <a class="nav-link" href="#" onclick="showSlide('support')">Support</a>
-      </nav>
-      <button id="mobile-menu-btn" onclick="toggleMenu()">☰</button>
-    </div>
-  </header>
+  <script>
+    // hide loading once everything is ready
+    window.addEventListener('load', () => {
+      document.getElementById('loading').style.display = 'none';
+    });
 
-  <main>
-    <section class="slide" id="script-slide">
-      <div class="container section">
-        <h2 class="section-title">Script</h2>
-        <div class="terminal-window">
-          <div class="terminal-header">
-            <div class="terminal-buttons">
-              <div class="t-btn t-close"></div>
-              <div class="t-btn t-min"></div>
-              <div class="t-btn t-max"></div>
-            </div>
-            <span class="terminal-title">script.lua</span>
-          </div>
-          <div class="terminal-body">
-            <pre id="script-code">loadstring(game:HttpGet("https://raw.githubusercontent.com/Nov-scripts/Nov-scripts/main/Nov-scripts.lua"))()</pre>
-            <button class="btn-copy" onclick="copyCode()">Copy</button>
-          </div>
-        </div>
-      </div>
-    </section>
+    function showSlide(id) {
+      ['script','shop','support'].forEach(sl => {
+        document.getElementById(sl + '-slide').style.display = 'none';
+      });
+      document.getElementById(id + '-slide').style.display = 'block';
+    }
 
-    <section class="slide" id="shop-slide" style="display:none">
-      <div class="container section">
-        <h2 class="section-title">Shop</h2>
-        <div class="features-grid">
-          <div class="feature-card">
-            <div class="feature-icon">🛒</div>
-            <h3>1 Week Key</h3>
-            <p>Access scripts and features for 1 week.</p>
-            <a href="https://www.roblox.com/catalog/74970939020346/1-week" target="_blank" class="btn btn-primary">Buy</a>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">⏳</div>
-            <h3>1 Month Key</h3>
-            <p>Access scripts and features for 1 month.</p>
-            <a href="https://www.roblox.com/catalog/72111813061314/1-month" target="_blank" class="btn btn-primary">Buy</a>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">🕒</div>
-            <h3>3 Months Key</h3>
-            <p>Access scripts and features for 3 months.</p>
-            <a href="https://www.roblox.com/catalog/136330632955006/3-months" target="_blank" class="btn btn-primary">Buy</a>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">🛡️</div>
-            <h3>5 Months Key</h3>
-            <p>Access scripts and features for 5 months.</p>
-            <a href="https://www.roblox.com/catalog/128942248437206/5-months" target="_blank" class="btn btn-primary">Buy</a>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">🧩</div>
-            <h3>Custom Key</h3>
-            <p>Use an existing key to create your own custom key.</p>
-            <a href="https://www.roblox.com/catalog/94187358789738/custom-key" target="_blank" class="btn btn-primary">Buy</a>
-          </div>
-        </div>
-      </div>
-    </section>
+    function copyCode() {
+      const code = document.getElementById("script-code").innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        alert("Script copied to clipboard!");
+      });
+    }
 
-    <section class="slide" id="support-slide" style="display:none">
-      <div class="container section">
-        <h2 class="section-title">Support</h2>
-        <div class="coming-soon-card">
-          <div class="pulsing-icon">💬</div>
-          <h3>Join Our Discord</h3>
-          <p>Looking for help or want to chill with the community? Join our Discord!</p>
-          <a href="https://discord.gg/vTTehBVWg6" target="_blank" class="btn btn-secondary">Join Discord</a>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer id="main-footer">
-    <div class="container">
-      <h3>Nov-Scripts</h3>
-      <p>Your source for Roblox script automation.</p>
-      <div class="footer-bottom">
-        <span>© 2025 Nov-Scripts. All rights reserved.</span>
-        <div class="credits">Credits: itzC9, GoodGamer, Nov</div>
-      </div>
-    </div>
-  </footer>
+    // spotlight cursor follow
+    document.addEventListener('mousemove', e => {
+      const sc = document.getElementById('spotlight-cursor');
+      sc.style.top = e.clientY + 'px';
+      sc.style.left = e.clientX + 'px';
+    });
+  </script>
 </body>
 </html>

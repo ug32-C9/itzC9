@@ -442,41 +442,218 @@ UICorner_18.Parent = Root
 UICorner_18.CornerRadius = UDim.new(0, 10)
 
 -- Scripts
+local function MainLocalScript()
+	-- Root is in outer scope (we created the GUI above)
+	local root = Root
+	local sidebar = root:WaitForChild("SIDEBAR")
+	local base = root:WaitForChild("BASE")
 
-local function ZDOAYQ_fake_script() -- Root.LocalScript 
-	local script = Instance.new('LocalScript', Root)
+	-- Get buttons & tabs
+	local mainBtn = sidebar:WaitForChild("MainBtn")
+	local editorBtn = sidebar:WaitForChild("EditorBtn")
+	local settingBtn = sidebar:WaitForChild("SettingBtn")
 
-	local Btn = script.Parent
-	local Base = Btn.Parent
+	local mainTab = base:WaitForChild("MainTab")
+	local editorTab = base:WaitForChild("EditorTab")
+	local settingTab = base:WaitForChild("SettingTab")
 
-	-- Map button names to tab names
-	local tabMap = {
-		MainBtn = "MAINTAB",
-		EditorBtn = "EDITORTAB",
-		SettingBtn = "SETTINGTAB"
-	}
+	-- Editor controls
+	local codeBox = editorTab:WaitForChild("codeBox")
+	local runBtn = editorTab:WaitForChild("RunBtn")
+	local clearBtn = editorTab:WaitForChild("ClearBtn")
+	local pasteBtn = editorTab:WaitForChild("PasteBtn")
+	local copyBtn = editorTab:WaitForChild("CopyBtn")
 
-	local tabName = tabMap[Btn.Name]
-	local tabFrame = Base:FindFirstChild(tabName)
+	-- Services
+	local UserInputService = game:GetService("UserInputService")
+	local StarterGui = game:GetService("StarterGui")
 
-	local tabFrames = {}
-	for _, child in Base:GetChildren() do
-		if child:IsA("Frame") and tabMap[child.Name.."Btn"] then
-			tabFrames[#tabFrames+1] = child
+	-- Colors
+	local defaultColor = Color3.fromRGB(44, 44, 44) -- matches original ~0.1725
+	local activeColor = Color3.fromRGB(0, 170, 255) -- highlight
+
+	-- safe notify wrapper
+	local function notify(title, text, duration)
+		duration = duration or 3
+		pcall(function()
+			StarterGui:SetCore("SendNotification", {
+				Title = title,
+				Text = text,
+				Duration = duration
+			})
+		end)
+	end
+
+	-- Helper: reset all sidebar buttons to default color
+	local function resetSidebarColors()
+		for _, child in pairs(sidebar:GetChildren()) do
+			if child:IsA("TextButton") then
+				child.BackgroundColor3 = defaultColor
+			end
 		end
 	end
 
-	Btn.MouseButton1Click:Connect(function()
-		if not tabFrame then
-			warn("Tab Frame '" .. tostring(tabName) .. "' not found!")
-			return
-		end
-		for _, frame in tabFrames do
+	-- Switch tab function
+	local tabMap = {
+		MainBtn = mainTab,
+		EditorBtn = editorTab,
+		SettingBtn = settingTab
+	}
+
+	local function switchTab(button)
+		-- Hide all tabs
+		for _, frame in pairs(tabMap) do
 			frame.Visible = false
 		end
-		tabFrame.Visible = true
+		-- Reset colors
+		resetSidebarColors()
+		-- Show requested tab and highlight
+		local tab = tabMap[button.Name]
+		if tab then
+			tab.Visible = true
+			button.BackgroundColor3 = activeColor
+		end
+	end
+
+	-- init: set default UI state
+	resetSidebarColors()
+	-- set button starting color based on original
+	mainBtn.BackgroundColor3 = activeColor
+	mainTab.Visible = true
+	editorTab.Visible = false
+	settingTab.Visible = false
+
+	-- Connect buttons
+	mainBtn.MouseButton1Click:Connect(function()
+		switchTab(mainBtn)
+	end)
+	editorBtn.MouseButton1Click:Connect(function()
+		switchTab(editorBtn)
+	end)
+	settingBtn.MouseButton1Click:Connect(function()
+		switchTab(settingBtn)
 	end)
 
+	-- ========== Editor Button Behavior ==========
 
+	-- Copy
+	copyBtn.MouseButton1Click:Connect(function()
+		local text = tostring(codeBox.Text or "")
+		if text ~= "" then
+			-- compatibility: some exploit environments use setclipboard
+			pcall(function()
+				if setclipboard then
+					setclipboard(text)
+				end
+			end)
+			notify("[CryonixApi]", "Code copied to clipboard!", 2)
+		else
+			notify("[CryonixApi]", "Nothing to copy!", 2)
+		end
+	end)
+
+	-- Paste (append)
+	pasteBtn.MouseButton1Click:Connect(function()
+		local ok, clip = pcall(function()
+			if getclipboard then
+				return getclipboard()
+			end
+			return ""
+		end)
+		if ok and clip and clip ~= "" then
+			codeBox.Text = codeBox.Text .. tostring(clip)
+			notify("[CryonixApi]", "Pasted from clipboard.", 1.5)
+		else
+			notify("[CryonixApi]", "Clipboard unavailable or empty.", 2)
+		end
+	end)
+
+	-- Clear
+	clearBtn.MouseButton1Click:Connect(function()
+		codeBox.Text = ""
+		notify("[CryonixApi]", "Editor cleared.", 1.2)
+	end)
+
+	-- Run (safe pcall + show results)
+	runBtn.MouseButton1Click:Connect(function()
+		local src = tostring(codeBox.Text or "")
+		if src == "" then
+			notify("[CryonixApi]", "No code to run.", 2)
+			return
+		end
+
+		-- attempt to compile
+		local fn, loadErr = loadstring(src)
+		if not fn then
+			notify("[CryonixApi] Error", "Compile error: " .. tostring(loadErr), 5)
+			return
+		end
+
+		-- run safely
+		local ok, runtimeErr = pcall(function()
+			fn()
+		end)
+		if ok then
+			notify("[CryonixApi]", "Script ran successfully.", 2)
+		else
+			notify("[CryonixApi] Error", "Runtime error: " .. tostring(runtimeErr), 5)
+		end
+	end)
+
+	-- ========== Hotkeys (when editor is focused) ==========
+	UserInputService.InputBegan:Connect(function(input, processed)
+		if processed then return end
+		-- only act when EditorTab is visible and user is typing in the codeBox
+		if not editorTab.Visible then return end
+		-- check ctrl down
+		local ctrlDown = UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) or UserInputService:IsKeyDown(Enum.KeyCode.RightControl)
+		if not ctrlDown then return end
+
+		if input.KeyCode == Enum.KeyCode.C then
+			-- Ctrl+C: copy
+			pcall(function() if setclipboard then setclipboard(codeBox.Text) end end)
+			notify("[CryonixApi]", "Code copied to clipboard!", 1.5)
+		elseif input.KeyCode == Enum.KeyCode.V then
+			-- Ctrl+V: paste
+			local ok, clip = pcall(function() return (getclipboard and getclipboard() or "") end)
+			if ok and clip and clip ~= "" then
+				codeBox.Text = codeBox.Text .. tostring(clip)
+				notify("[CryonixApi]", "Pasted from clipboard.", 1.2)
+			else
+				notify("[CryonixApi]", "Clipboard unavailable or empty.", 2)
+			end
+		elseif input.KeyCode == Enum.KeyCode.X then
+			-- Ctrl+X: cut (copy then clear)
+			pcall(function() if setclipboard then setclipboard(codeBox.Text) end end)
+			codeBox.Text = ""
+			notify("[CryonixApi]", "Cut to clipboard.", 1.5)
+		elseif input.KeyCode == Enum.KeyCode.R then
+			-- Ctrl+R: run
+			local src = tostring(codeBox.Text or "")
+			if src == "" then
+				notify("[CryonixApi]", "No code to run.", 2)
+				return
+			end
+			local fn, loadErr = loadstring(src)
+			if not fn then
+				notify("[CryonixApi] Error", "Compile error: " .. tostring(loadErr), 5)
+				return
+			end
+			local ok, runtimeErr = pcall(fn)
+			if ok then
+				notify("[CryonixApi]", "Script ran successfully.", 2)
+			else
+				notify("[CryonixApi] Error", "Runtime error: " .. tostring(runtimeErr), 5)
+			end
+		end
+	end)
+
+	-- small UX tweak: focus codeBox on editor tab open
+	editorBtn.MouseButton1Click:Connect(function()
+		wait(0.08)
+		codeBox:CaptureFocus()
+	end)
 end
-coroutine.wrap(ZDOAYQ_fake_script)()
+
+-- run the GUI script
+coroutine.wrap(MainLocalScript)()
